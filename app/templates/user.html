@@ -10,11 +10,11 @@
                 {% if user.last_seen %}<p><i>Last seen on: {{user.last_seen}}</i></p>{% endif %}
                 <p>{{ user.followers.count() }} Followers |
                     {% if user.id == g.user.id %}
-                        <a href="/edit">Edit</a>
+                        <a href="{{ url_for('edit') }}">Edit</a>
                     {% elif not g.user.is_following(user) %}
-                        <a href="/follow/{{ user.nickname }}">Follow</a>
+                        <a href="{{ url_for('follow', nickname=user.nickname) }}">Follow</a>
                     {% else %}
-                        <a href="/unfollow/{{ user.nickname }}">Unfollow</a>
+                        <a href="{{ url_for('unfollow', nickname=user.nickname) }}">Unfollow</a>
                     {% endif %}
                 </p>
             </td>
@@ -24,6 +24,6 @@
     {% for post in posts.items %}
         {% include "post.html" %}
     {% endfor %}
-    {% if posts.has_prev %}<a href="/user/{{ user.nickname }}/{{ posts.prev_num }}"><< Newer posts</a>{% else %}<< Newer posts{% endif %}
-    {% if posts.has_next %}<a href="/user/{{ user.nickname }}/{{ posts.next_num }}">Older posts >></a>{% else %}Older posts >>{% endif %}
+    {% if posts.has_prev %}<a href="{{ url_for('user', nickname=user.nickname, page=posts.prev_num) }}"><< Newer posts</a>{% else %}<< Newer posts{% endif %}
+    {% if posts.has_next %}<a href="{{ url_for('user', nickname=user.nickname, page=posts.next_num) }}">Older posts >></a>{% else %}Older posts >>{% endif %}
 {% endblock %}
