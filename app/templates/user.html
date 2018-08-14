@@ -8,7 +8,15 @@
                 <h3>User: {{ user.nickname }}</h3>
                 {% if user.about_me %}<p>{{ user.about_me }}</p>{% endif %}
                 {% if user.last_seen %}<p><i>Last seen on: {{user.last_seen}}</i></p>{% endif %}
-                {% if user.id == g.user.id %}<p><a href="/edit">Edit</a></p>{% endif %}
+                <p>{{ user.followers.count() }} Followers |
+                    {% if user.id == g.user.id %}
+                        <a href="/edit">Edit</a>
+                    {% elif not g.user.is_following(user) %}
+                        <a href="/follow/{{ user.nickname }}">Follow</a>
+                    {% else %}
+                        <a href="/unfollow/{{ user.nickname }}">Unfollow</a>
+                    {% endif %}
+                </p>
             </td>
         </tr>
     </table>
