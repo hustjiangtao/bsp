@@ -4,16 +4,18 @@
     <h1>bsp</h1>
     <form action="" method="post" name="login">
         {{ form.hidden_tag() }}
-        <p>
-            enter your openid:<br>
-            {{ form.openid(size=80) }}<br>
-            {% for error in form.openid.errors %}
-                <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}<br>
-        |{% for pr in providers %}
-        <a href="javascript:set_openid('{{ pr.url }}', '{{ pr.name }}');">{{ pr.name }}</a> |
-        {% endfor %}
-        </p>
+{#        <p>#}
+{#            enter your openid:<br>#}
+{#            {{ form.openid(size=80) }}<br>#}
+{#            {% for error in form.openid.errors %}#}
+{#                <span style="color: red;">[{{ error }}]</span>#}
+{#            {% endfor %}<br>#}
+{#        |{% for pr in providers %}#}
+{#        <a href="javascript:set_openid('{{ pr.url }}', '{{ pr.name }}');">{{ pr.name }}</a> |#}
+{#        {% endfor %}#}
+{#        </p>#}
+        <p>enter your email:<br>{{ form.email(size=30) }}</p>
+        <p>enter your nickname:<br>{{ form.nickname(size=30) }}</p>
         <p>{{ form.remember_me() }}Remember Me</p>
         <p><input type="submit" value="Sign In"></p>
     </form>

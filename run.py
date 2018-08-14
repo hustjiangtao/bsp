@@ -7,5 +7,5 @@
 from app import app
 
 
-app.run(debug=True)
-# app.run()
+# app.run(debug=True)
+app.run()
