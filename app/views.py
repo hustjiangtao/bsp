@@ -118,7 +118,8 @@ def user(nickname, page=1):
     if user is None:
         flash(f"User {nickname} is not found.")
         return redirect(url_for('index'))
-    posts = g.user.followed_posts().paginate(page, POSTS_PER_PAGE, False)
+    posts = g.user.posts.order_by(Post.timestamp.desc()).paginate(page, POSTS_PER_PAGE, False)
+    # posts = g.user.followed_posts().paginate(page, POSTS_PER_PAGE, False)
     return render_template('user.html', user=user, posts=posts)
 
 
