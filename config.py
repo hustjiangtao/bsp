@@ -35,7 +35,7 @@ MIAL_PORT = 465
 MAIL_USE_TLS = True
 MAIL_USE_SSL = False
 MAIL_USERNAME = os.environ.get('MAIL_USERNAME') or "test_jiangtao@163.com"
-MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD') or input("Please input your 163mail password:")
+MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD') or "h123456"
 
 # admins
 ADMINS = ["test_jiangtao@163.com"]
