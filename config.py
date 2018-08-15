@@ -39,3 +39,7 @@ MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD') or input("Please input your 163m
 
 # admins
 ADMINS = ["test_jiangtao@163.com"]
+
+# sql test
+SQLALCHEMY_RECORD_QUERIES = True
+DATABASE_QUERY_TIMEOUT = 0.5
