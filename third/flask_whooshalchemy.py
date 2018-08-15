@@ -11,6 +11,11 @@
 
 '''
 
+
+from __future__ import with_statement
+from __future__ import absolute_import
+
+
 """
 原版的flask_whooshalchemy不支持Python@3
 此处为修改兼容Python@3版本
@@ -18,9 +23,6 @@
     l:24 flask.ext.sqlalchemy -> flask_sqlalchemy
     unicode() -> str()
 """
-
-from __future__ import with_statement
-from __future__ import absolute_import
 
 
 # import flask.ext.sqlalchemy as flask_sqlalchemy
