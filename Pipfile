@@ -16,6 +16,7 @@ flask-babel = "*"
 guess-language = "*"
 flipflop = "*"
 coverage = "*"
+tornado = "*"
 
 [dev-packages]
 
