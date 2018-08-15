@@ -24,3 +24,7 @@ SQLALCHEMY_MIGRATE_REPO = os.path.join(basedir, "db_repository")
 
 # pagination
 POSTS_PER_PAGE = 3
+
+# whoosh search
+WHOOSH_BASH = os.path.join(basedir, "search.db")
+MAX_SEARCH_RESULTS = 50

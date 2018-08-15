@@ -109,3 +109,6 @@ venv.bak/
 # db
 *.db
 /db_repository
+
+# whoosh search
+/whoosh_index

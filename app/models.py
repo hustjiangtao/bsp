@@ -5,7 +5,8 @@
 
 
 from hashlib import md5
-from app import db
+from third.flask_whooshalchemy import whoosh_index
+from app import app, db
 
 
 followers = db.Table("followers",
@@ -75,5 +76,11 @@ class Post(db.Model):
     timestamp = db.Column(db.DateTime)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
 
+    __searchable__ = ["body"]
+
     def __repr__(self):
         return f"<Post {self.body}>"
+
+
+# whoosh search
+whoosh_index(app, Post)
