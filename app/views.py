@@ -8,9 +8,10 @@ from datetime import datetime
 from flask import render_template, flash, redirect, session, url_for, request, g
 from flask_login import login_user, logout_user, current_user, login_required
 from app import app, db, lm, oid
+from config import POSTS_PER_PAGE, MAX_SEARCH_RESULTS
 from .forms import LoginForm, EditForm, PostForm, SearchForm
 from .models import User, Post
-from config import POSTS_PER_PAGE, MAX_SEARCH_RESULTS
+from .emails import follower_notification
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -42,7 +43,7 @@ def login():
         session["remember_me"] = form.remember_me.data
         # result = oid.try_login(form.openid.data, ask_for=["nickname", "email"])
         # result = True
-        after_login(email=form.email.data, nickname=form.nickname.data)
+        return after_login(email=form.email.data, nickname=form.nickname.data)
         # return result
         # return oid.try_login(form.openid.data, ask_for=["nickname", "email"])
     return render_template('login.html', form=form, providers=app.config["OPENID_PROVIDERS"])
@@ -168,6 +169,7 @@ def follow(nickname):
     db.session.add(u)
     db.session.commit()
     flash(f"You are now following {nickname}.")
+    follower_notification(user, g.user)
     return redirect(url_for('user', nickname=nickname))
 
 

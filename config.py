@@ -28,3 +28,14 @@ POSTS_PER_PAGE = 3
 # whoosh search
 WHOOSH_BASH = os.path.join(basedir, "search.db")
 MAX_SEARCH_RESULTS = 50
+
+# mail
+MAIL_SERVER = "smtp.163.com"
+MIAL_PORT = 465
+MAIL_USE_TLS = True
+MAIL_USE_SSL = False
+MAIL_USERNAME = os.environ.get('MAIL_USERNAME') or "test_jiangtao@163.com"
+MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD') or input("Please input your 163mail password:")
+
+# admins
+ADMINS = ["test_jiangtao@163.com"]
