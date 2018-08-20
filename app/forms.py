@@ -5,16 +5,17 @@
 
 
 from flask_wtf import FlaskForm
-from wtforms import StringField, BooleanField, TextAreaField
+from wtforms import StringField, BooleanField, TextAreaField, PasswordField, SubmitField
 from wtforms.validators import DataRequired, Length
 
 
 class LoginForm(FlaskForm):
     """Login form"""
     # openid = StringField("openid", validators=[DataRequired()])
-    email = StringField("email", validators=[DataRequired()])
-    nickname = StringField("nickname", validators=[DataRequired()])
-    remember_me = BooleanField("remember_me", default=False)
+    username = StringField("Username", validators=[DataRequired()])
+    password = PasswordField("Password", validators=[DataRequired()])
+    remember_me = BooleanField("Remember Me", default=False)
+    submit = SubmitField("Sign In")
 
 
 class EditForm(FlaskForm):

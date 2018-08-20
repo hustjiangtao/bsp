@@ -5,6 +5,7 @@
 
 
 from hashlib import md5
+from datetime import datetime
 from third.flask_whooshalchemy import whoosh_index
 from app import app, db
 
@@ -18,8 +19,9 @@ followers = db.Table("followers",
 class User(db.Model):
     """User table"""
     id = db.Column(db.Integer, primary_key=True)
-    nickname = db.Column(db.String(64), index=True, unique=True)
+    username = db.Column(db.String(64), index=True, unique=True)
     email = db.Column(db.String(120), index=True, unique=True)
+    password_hash = db.Column(db.String(128))
     posts = db.relationship("Post", backref="author", lazy="dynamic")
     about_me = db.Column(db.String(140))
     last_seen = db.Column(db.DateTime)
@@ -50,7 +52,7 @@ class User(db.Model):
         return f"http://www.gravatar.com/avatar/{md5_email}?d=mm&s={size}"
 
     def __repr__(self):
-        return f"<User {self.nickname}>"
+        return f"<User {self.username}>"
 
     def follow(self, user):
         if not self.is_following(user):
@@ -73,7 +75,7 @@ class Post(db.Model):
     """Post table"""
     id = db.Column(db.Integer, primary_key=True)
     body = db.Column(db.String(140))
-    timestamp = db.Column(db.DateTime)
+    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
 
     __searchable__ = ["body"]

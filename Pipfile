@@ -6,7 +6,6 @@ name = "pypi"
 [packages]
 flask = "*"
 flask-login = "*"
-flask-openid = "*"
 flask-mail = "*"
 flask-sqlalchemy = "*"
 sqlalchemy-migrate = "*"
@@ -18,6 +17,7 @@ flipflop = "*"
 coverage = "*"
 tornado = "*"
 gunicorn = "*"
+flask-migrate = "*"
 
 [dev-packages]
 
