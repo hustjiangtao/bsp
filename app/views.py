@@ -91,13 +91,13 @@ def logout():
     return redirect(url_for('index'))
 
 
-@app.route('/user/<nickname>')
-@app.route('/user/<nickname>/<int:page>')
+@app.route('/user/<username>')
+@app.route('/user/<username>/<int:page>')
 @login_required
-def user(nickname, page=1):
-    user = User.query.filter_by(nickname=nickname).first()
+def user(username, page=1):
+    user = User.query.filter_by(username=username).first()
     if user is None:
-        flash(f"User {nickname} is not found.")
+        flash(f"User {username} is not found.")
         return redirect(url_for('index'))
     posts = g.user.posts.order_by(Post.timestamp.desc()).paginate(page, POSTS_PER_PAGE, False)
     # posts = g.user.followed_posts().paginate(page, POSTS_PER_PAGE, False)

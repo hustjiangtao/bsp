@@ -41,8 +41,9 @@ class User(UserMixin, db.Model):
         return check_password_hash(self.password_hash, password)
 
     def avatar(self, size):
-        md5_email = md5(self.email.encode('utf-8')).hexdigest()
-        return f"http://www.gravatar.com/avatar/{md5_email}?d=mm&s={size}"
+        default_avatar = "identicon"
+        md5_email = md5(self.email.lower().encode('utf-8')).hexdigest()
+        return f"http://www.gravatar.com/avatar/{md5_email}?d={default_avatar}&s={size}"
 
     def __repr__(self):
         return f"<User {self.username}>"
