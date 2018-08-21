@@ -120,45 +120,45 @@ def edit_profile():
     return render_template('edit_profile.html', title="Edit Profile", form=form)
 
 
-@app.route('/follow/<nickname>')
+@app.route('/follow/<username>')
 @login_required
-def follow(nickname):
-    user = User.query.filter_by(nickname=nickname).first()
+def follow(username):
+    user = User.query.filter_by(username=username).first()
     if user is None:
-        flash(f"User {nickname} is not found.")
+        flash(f"User {username} is not found.")
         return redirect(url_for('index'))
-    if user == g.user:
+    if user == current_user:
         flash(f"You can't follow yourself.")
-        return redirect(url_for('user', nickname=nickname))
-    u = g.user.follow(user)
+        return redirect(url_for('user', username=username))
+    u = current_user.follow(user)
     if u is None:
-        flash(f"Cannot follow {user}.")
-        return redirect(url_for('user', nickname=nickname))
+        flash(f"Cannot follow {username}.")
+        return redirect(url_for('user', username=username))
     db.session.add(u)
     db.session.commit()
-    flash(f"You are now following {nickname}.")
-    follower_notification(user, g.user)
-    return redirect(url_for('user', nickname=nickname))
+    flash(f"You are now following {username}.")
+    follower_notification(user, current_user)
+    return redirect(url_for('user', username=username))
 
 
-@app.route('/unfollow/<nickname>')
+@app.route('/unfollow/<username>')
 @login_required
-def unfollow(nickname):
-    user = User.query.filter_by(nickname=nickname).first()
+def unfollow(username):
+    user = User.query.filter_by(username=username).first()
     if user is None:
-        flash(f"User {nickname} is not found.")
+        flash(f"User {username} is not found.")
         return redirect(url_for('index'))
-    if user == g.user:
+    if user == current_user:
         flash(f"You can't unfollow yourself.")
-        return redirect(url_for('user', nickname=nickname))
-    u = g.user.unfollow(user)
+        return redirect(url_for('user', username=username))
+    u = current_user.unfollow(user)
     if u is None:
-        flash(f"Cannot unfollow {user}.")
-        return redirect(url_for('user', nickname=nickname))
+        flash(f"Cannot unfollow {username}.")
+        return redirect(url_for('user', username=username))
     db.session.add(u)
     db.session.commit()
-    flash(f"You have stopped following {nickname}.")
-    return redirect(url_for('user', nickname=nickname))
+    flash(f"You have stopped following {username}.")
+    return redirect(url_for('user', username=username))
 
 
 @app.route('/search', methods=['POST'])
