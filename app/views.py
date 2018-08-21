@@ -11,7 +11,7 @@ from flask_sqlalchemy import get_debug_queries
 from werkzeug.urls import url_parse
 from app import app, db
 from config import POSTS_PER_PAGE, MAX_SEARCH_RESULTS, SQLALCHEMY_RECORD_QUERIES, DATABASE_QUERY_TIMEOUT
-from .forms import LoginForm, RegistrationForm, EditForm, PostForm, SearchForm
+from .forms import LoginForm, RegistrationForm, EditProfileForm, PostForm, SearchForm
 from .models import User, Post
 from .emails import follower_notification
 
@@ -104,31 +104,20 @@ def user(username, page=1):
     return render_template('user.html', user=user, posts=posts)
 
 
-@app.route('/edit', methods=['GET', 'POST'])
+@app.route('/edit_profile', methods=['GET', 'POST'])
 @login_required
-def edit():
-    form = EditForm()
+def edit_profile():
+    form = EditProfileForm()
     if form.validate_on_submit():
-        g.user.nickname = form.nickname.data
-        g.user.about_me = form.about_me.data
-        db.session.add(g.user)
+        current_user.username = form.username.data
+        current_user.about_me = form.about_me.data
         db.session.commit()
         flash("Your changes have been saved.")
-        return redirect(url_for('edit'))
-    else:
-        form.nickname.data = g.user.nickname
-        form.about_me.data = g.user.about_me
-    return render_template('edit.html', form=form)
-
-
-@app.errorhandler(404)
-def internal_error(error):
-    return render_template('404.html'), 404
-
-
-@app.errorhandler(500)
-def internal_error(error):
-    return render_template('500.html'), 500
+        return redirect(url_for('edit_profile'))
+    elif request.method == 'GET':
+        form.username.data = current_user.username
+        form.about_me.data = current_user.about_me
+    return render_template('edit_profile.html', title="Edit Profile", form=form)
 
 
 @app.route('/follow/<nickname>')

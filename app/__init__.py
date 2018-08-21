@@ -24,7 +24,7 @@ mail = Mail(app)
 app.jinja_env.globals["momentjs"] = momentjs
 
 
-from app import views, models
+from app import views, models, errors
 
 
 if not app.debug:
