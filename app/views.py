@@ -23,13 +23,13 @@ from .emails import follower_notification
 def index(page=1):
     form = PostForm()
     if form.validate_on_submit():
-        post = Post(body=form.post.data, timestamp=datetime.utcnow(), author=g.user)
+        post = Post(body=form.post.data, author=current_user)
         db.session.add(post)
         db.session.commit()
-        flash("You post is now live.")
+        flash("Your post is now live.")
         return redirect(url_for('index'))
     # posts = Post.query.filter_by(author=g.user).order_by(Post.timestamp.desc()).all()
-    posts = g.user.followed_posts().paginate(page, POSTS_PER_PAGE, False)
+    posts = current_user.followed_posts().paginate(page, POSTS_PER_PAGE, False)
     return render_template("index.html", title="Home", form=form, posts=posts)
 
 
