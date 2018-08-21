@@ -5,12 +5,13 @@
 
 
 from datetime import datetime
-from flask import render_template, flash, redirect, session, url_for, request, g
+from flask import render_template, flash, redirect, url_for, request, g
 from flask_login import login_user, logout_user, current_user, login_required
 from flask_sqlalchemy import get_debug_queries
-from app import app, db, lm
+from werkzeug.urls import url_parse
+from app import app, db
 from config import POSTS_PER_PAGE, MAX_SEARCH_RESULTS, SQLALCHEMY_RECORD_QUERIES, DATABASE_QUERY_TIMEOUT
-from .forms import LoginForm, EditForm, PostForm, SearchForm
+from .forms import LoginForm, RegistrationForm, EditForm, PostForm, SearchForm
 from .models import User, Post
 from .emails import follower_notification
 
@@ -20,8 +21,6 @@ from .emails import follower_notification
 @app.route('/index/<int:page>', methods=['GET', 'POST'])
 @login_required
 def index(page=1):
-    title = "Home"
-    name = "gagaga"
     form = PostForm()
     if form.validate_on_submit():
         post = Post(body=form.post.data, timestamp=datetime.utcnow(), author=g.user)
@@ -31,45 +30,41 @@ def index(page=1):
         return redirect(url_for('index'))
     # posts = Post.query.filter_by(author=g.user).order_by(Post.timestamp.desc()).all()
     posts = g.user.followed_posts().paginate(page, POSTS_PER_PAGE, False)
-    return render_template("index.html", title=title, name=name, form=form, posts=posts)
+    return render_template("index.html", title="Home", form=form, posts=posts)
 
 
-# @app.route('/login', methods=['GET'])
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    if g.user is not None and g.user.is_authenticated:
+    if current_user.is_authenticated:
         return redirect(url_for('index'))
     form = LoginForm()
     if form.validate_on_submit():
-        session["remember_me"] = form.remember_me.data
-        result = True
-        # return after_login(email=form.email.data, nickname=form.nickname.data)
-        # return result
-    return render_template('login.html', title="Sign In", form=form, providers=app.config["OPENID_PROVIDERS"])
+        user = User.query.filter_by(username=form.username.data).first()
+        if user is None or not user.check_password(form.password.data):
+            flash('Invalid username or password')
+            return redirect(url_for('login'))
+        login_user(user, remember=form.remember_me.data)
+        next_page = request.args.get('next')
+        if not next_page or url_parse(next_page).netloc != '':
+            next_page = url_for('index')
+        return redirect(next_page)
+    return render_template('login.html', title="Sign In", form=form)
 
 
-@lm.user_loader
-def loader_user(id):
-    return User.query.get(int(id))
-
-
-def after_login(email, nickname):
-    print('=====')
-    user = User.query.filter_by(email=email).first()
-    if user is None:
-        nickname = nickname
-        if nickname is None or nickname == "":
-            nickname = email.split('@')[0]
-        user = User(nickname=nickname, email=email)
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+    form = RegistrationForm()
+    if form.validate_on_submit():
+        print('===')
+        user = User(username=form.username.data, email=form.email.data)
+        user.set_password(form.password.data)
         db.session.add(user)
-        db.session.add(user.follow(user))  # self followed
         db.session.commit()
-    remember_me = False
-    if "remember_me" in session:
-        remember_me = session["remember_me"]
-        session.pop("remember", None)
-    login_user(user, remember=remember_me)
-    return redirect(request.args.get('next') or url_for('index'))
+        flash('Congratulations, you are now a registered user!')
+        return redirect(url_for('login'))
+    return render_template('register.html', title="Register", form=form)
 
 
 @app.before_request

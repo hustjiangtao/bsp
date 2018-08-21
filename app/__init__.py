@@ -6,10 +6,8 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 
-import os
 from flask_login import LoginManager
 from flask_mail import Mail
-from config import basedir
 from .momentjs import momentjs
 
 
@@ -18,9 +16,8 @@ app.config.from_object("config")
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
-lm = LoginManager()
-lm.init_app(app)
-lm.login_view = "login"
+login = LoginManager(app)
+login.login_view = 'login'
 
 mail = Mail(app)
 

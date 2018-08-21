@@ -1,6 +1,7 @@
 {% extends "base.html" %}
+
 {% block content %}
-    <h3>hi, {{ g.user.nickname }}</h3>
+    <h3>hi, {{ current_user.username }}</h3>
     <form action="" method="post" name="post">
         {{ form.hidden_tag() }}
         <table>
@@ -21,7 +22,7 @@
         </table>
     </form>
     {% for post in posts.items %}
-        <p>{{ g.user.nickname }} says: {{ post.body }}</p>
+        <p>{{ post.author.username }} says: {{ post.body }}</p>
     {% endfor %}
     {% if posts.has_prev %}<a href="{{ url_for('index', page=posts.prev_num) }}"><< Newer posts</a>{% else %}<< Newer posts{% endif %}
     {% if posts.has_next %}<a href="{{ url_for('index', page=posts.next_num) }}">Older posts >></a>{% else %}Older posts >>{% endif %}

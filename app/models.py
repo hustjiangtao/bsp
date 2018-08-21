@@ -6,8 +6,10 @@
 
 from hashlib import md5
 from datetime import datetime
+from flask_login import UserMixin
+from werkzeug.security import generate_password_hash, check_password_hash
 from third.flask_whooshalchemy import whoosh_index
-from app import app, db
+from app import app, db, login
 
 
 followers = db.Table("followers",
@@ -16,7 +18,7 @@ followers = db.Table("followers",
                      )
 
 
-class User(db.Model):
+class User(UserMixin, db.Model):
     """User table"""
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), index=True, unique=True)
@@ -32,20 +34,11 @@ class User(db.Model):
                                backref=db.backref("followers", lazy="dynamic"),
                                lazy="dynamic")
 
-    @property
-    def is_authenticated(self):
-        return True
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password)
 
-    @property
-    def is_active(self):
-        return True
-
-    @property
-    def is_anonymous(self):
-        return False
-
-    def get_id(self):
-        return str(self.id)
+    def check_password(self, password):
+        return check_password_hash(self.password_hash, password)
 
     def avatar(self, size):
         md5_email = md5(self.email.encode('utf-8')).hexdigest()
@@ -82,6 +75,11 @@ class Post(db.Model):
 
     def __repr__(self):
         return f"<Post {self.body}>"
+
+
+@login.user_loader
+def load_user(id):
+    return User.query.get(int(id))
 
 
 # whoosh search
