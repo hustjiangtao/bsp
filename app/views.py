@@ -28,7 +28,7 @@ def index(page=1):
         db.session.commit()
         flash("Your post is now live.")
         return redirect(url_for('index'))
-    # posts = Post.query.filter_by(author=g.user).order_by(Post.timestamp.desc()).all()
+    # posts = Post.query.filter_by(author=current_user).order_by(Post.timestamp.desc()).all()
     posts = current_user.followed_posts().paginate(page, POSTS_PER_PAGE, False)
     return render_template("index.html", title="Home", form=form, posts=posts)
 
@@ -69,9 +69,8 @@ def register():
 
 @app.before_request
 def before_request():
-    g.user = current_user
-    if g.user.is_authenticated:
-        g.user.last_seen = datetime.utcnow()
+    if current_user.is_authenticated:
+        current_user.last_seen = datetime.utcnow()
         db.session.commit()
         g.search_form = SearchForm()
 
@@ -99,8 +98,8 @@ def user(username, page=1):
     if user is None:
         flash(f"User {username} is not found.")
         return redirect(url_for('index'))
-    posts = g.user.posts.order_by(Post.timestamp.desc()).paginate(page, POSTS_PER_PAGE, False)
-    # posts = g.user.followed_posts().paginate(page, POSTS_PER_PAGE, False)
+    posts = current_user.posts.order_by(Post.timestamp.desc()).paginate(page, POSTS_PER_PAGE, False)
+    # posts = current_user.followed_posts().paginate(page, POSTS_PER_PAGE, False)
     return render_template('user.html', user=user, posts=posts)
 
 
