@@ -24,6 +24,10 @@ mail = Mail(app)
 app.jinja_env.globals["momentjs"] = momentjs
 
 
+from app.errors import bp as errors_bp
+app.register_blueprint(errors_bp)
+
+
 from app import views, models, errors
 
 
