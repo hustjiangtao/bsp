@@ -18,9 +18,8 @@ from .emails import follower_notification
 
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/index', methods=['GET', 'POST'])
-@app.route('/index/<int:page>', methods=['GET', 'POST'])
 @login_required
-def index(page=1):
+def index():
     form = PostForm()
     if form.validate_on_submit():
         post = Post(body=form.post.data, author=current_user)
@@ -28,9 +27,12 @@ def index(page=1):
         db.session.commit()
         flash("Your post is now live.")
         return redirect(url_for('index'))
+    page = request.args.get('page', 1, type=int)
     # posts = Post.query.filter_by(author=current_user).order_by(Post.timestamp.desc()).all()
     posts = current_user.followed_posts().paginate(page, POSTS_PER_PAGE, False)
-    return render_template("index.html", title="Home", form=form, posts=posts)
+    next_url = url_for('explore', page=posts.next_num) if posts.has_next else None
+    prev_url = url_for('explore', page=posts.prev_num) if posts.has_prev else None
+    return render_template("index.html", title="Home", form=form, posts=posts.items, next_url=next_url, prev_url=prev_url)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -57,7 +59,7 @@ def register():
         return redirect(url_for('index'))
     form = RegistrationForm()
     if form.validate_on_submit():
-        print('===')
+        print('new register.')
         user = User(username=form.username.data, email=form.email.data)
         user.set_password(form.password.data)
         db.session.add(user)
@@ -91,16 +93,18 @@ def logout():
 
 
 @app.route('/user/<username>')
-@app.route('/user/<username>/<int:page>')
 @login_required
-def user(username, page=1):
+def user(username):
     user = User.query.filter_by(username=username).first()
     if user is None:
         flash(f"User {username} is not found.")
         return redirect(url_for('index'))
-    posts = current_user.posts.order_by(Post.timestamp.desc()).paginate(page, POSTS_PER_PAGE, False)
+    page = request.args.get('page', 1, type=int)
+    posts = user.posts.order_by(Post.timestamp.desc()).paginate(page, POSTS_PER_PAGE, False)
     # posts = current_user.followed_posts().paginate(page, POSTS_PER_PAGE, False)
-    return render_template('user.html', user=user, posts=posts)
+    next_url = url_for('explore', username=user.username, page=posts.next_num) if posts.has_next else None
+    prev_url = url_for('explore', username=user.username, page=posts.prev_num) if posts.has_prev else None
+    return render_template('user.html', user=user, posts=posts.items, next_url=next_url, prev_url=prev_url)
 
 
 @app.route('/edit_profile', methods=['GET', 'POST'])
@@ -158,6 +162,16 @@ def unfollow(username):
     db.session.commit()
     flash(f"You have stopped following {username}.")
     return redirect(url_for('user', username=username))
+
+
+@app.route('/explore')
+@login_required
+def explore():
+    page = request.args.get('page', 1, type=int)
+    posts = Post.query.order_by(Post.timestamp.desc()).paginate(page, POSTS_PER_PAGE, False)
+    next_url = url_for('explore', page=posts.next_num) if posts.has_next else None
+    prev_url = url_for('explore', page=posts.prev_num) if posts.has_prev else None
+    return render_template('index.html', title="Explore", posts=posts.items, next_url=next_url, prev_url=prev_url)
 
 
 @app.route('/search', methods=['POST'])
