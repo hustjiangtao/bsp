@@ -215,5 +215,6 @@ def search():
 @app.route('/search_results/<query>')
 @login_required
 def search_results(query):
-    results = Post.query.whoosh_search(query, MAX_SEARCH_RESULTS).all()
+    # results = Post.query.whoosh_search(query, MAX_SEARCH_RESULTS).all()
+    results = []
     return render_template('search_results.html', query=query, results=results)

@@ -10,7 +10,6 @@ from datetime import datetime
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 import jwt
-from third.flask_whooshalchemy import whoosh_index
 from app import app, db, login
 
 
@@ -98,7 +97,3 @@ class Post(db.Model):
 @login.user_loader
 def load_user(id):
     return User.query.get(int(id))
-
-
-# whoosh search
-whoosh_index(app, Post)
