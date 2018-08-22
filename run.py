@@ -14,7 +14,10 @@ from tornado.wsgi import WSGIContainer
 from tornado.httpserver import HTTPServer
 from tornado.ioloop import IOLoop
 from tornado.options import options
-from app import app
+from app import create_app
+
+
+app = create_app()
 
 
 def main():
