@@ -4,6 +4,7 @@
 """Config for server"""
 
 
+# WTF_CSRF_ENABLED = False
 CSRF_ENABLED = True
 SECRET_KEY = "BOOKMARKS_SHARE_PLAN"
 
@@ -33,8 +34,8 @@ MAX_SEARCH_RESULTS = 50
 # mail
 MAIL_SERVER = "smtp.163.com"
 MAIL_PORT = 465
-MAIL_USE_TLS = True
-MAIL_USE_SSL = False
+MAIL_USE_TLS = False
+MAIL_USE_SSL = True
 MAIL_USERNAME = os.environ.get('MAIL_USERNAME') or "test_jiangtao@163.com"
 MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD') or "h123456"
 # admins

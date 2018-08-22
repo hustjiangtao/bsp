@@ -18,6 +18,7 @@ coverage = "*"
 tornado = "*"
 gunicorn = "*"
 flask-migrate = "*"
+pyjwt = "*"
 
 [dev-packages]
 
