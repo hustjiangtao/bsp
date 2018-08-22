@@ -30,9 +30,11 @@ app.register_blueprint(errors_bp)
 from app.auth import bp as auth_bp
 app.register_blueprint(auth_bp, url_prefix='/auth')
 
+from app.main import bp as main_bp
+app.register_blueprint(main_bp)
 
-from app import views, models, errors
 
+from app import models
 
 # logging email
 if not app.debug:

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # -*- author: Jiangtao -*-
 
-"""Forms"""
+"""main forms"""
 
 
 from flask_wtf import FlaskForm
