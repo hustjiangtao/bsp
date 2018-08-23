@@ -8,19 +8,15 @@ and Google Chrome Bookmarks will be supported first.
 
 - `.venv`: Python Interpreter for pipenv
 - `app`: source code for bsp
-- `db_repository & app.db`: db for sqlite
+- `migrations & app.db`: db for sqlite
 - `deploy`: deploy config for remote server
 - `third`: the third module which modified from pip files
 - `tmp`: temporary fold
-- `whoosh_index`: whoosh full text search
 - `config.py`: config for app
-- `db_create.py`: script for creating sqlite tables
-- `db_migrate.py`: script for migrating sqlite tables
-- `db_upgrade.py`: script for upgrading sqlite tables
-- `db_downgrade.py`: script for downgrading sqlite tables
-- `Pipfile & Pipfile.lock`: pipenv requirements
 - `run.py`: script for run bsp server
 - `tests.py`: test module for bsp server
+- `Pipfile & Pipfile.lock`: pipenv requirements
+- `LICENSE`: the license file
 
 ## Run this server
 
@@ -43,7 +39,16 @@ $ . ./deploy/deploy.sh
 - create db
 
 ```shell
-$ pipenv run python db_create.py
+$ pipenv run flask db init
+$ pipenv run flask db migrate -m "first migration"
+$ pipenv run flask db upgrade
+```
+
+- update db
+
+```shell
+$ pipenv run flask db migrate -m "update db"
+$ pipenv run flask db upgrade
 ```
 
 - start/restart bsp server
