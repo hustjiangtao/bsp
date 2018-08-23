@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h3>Search results for "<U>{{ g.search_form.q.data }}</U>":</h3>
+    {% for post in posts %}
+        {% include "_post.html" %}
+    {% endfor %}
+    {% if prev_url %}<a href="{{ prev_url }}"><< Newer posts</a>{% else %}<< Newer posts{% endif %}
+    {% if next_url %}<a href="{{ next_url }}">Older posts >></a>{% else %}Older posts >>{% endif %}
+{% endblock %}

@@ -9,6 +9,9 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import LoginManager
 from flask_mail import Mail
+
+from elasticsearch import Elasticsearch
+
 from app.momentjs import momentjs
 
 
@@ -26,6 +29,9 @@ def create_app(cfg="config"):
     app = Flask(__name__)
     app.config.from_object(cfg)
     app.jinja_env.globals["momentjs"] = momentjs
+
+    # es
+    app.elasticsearch = Elasticsearch([app.config["ELASTICSEARCH_URL"]]) if app.config["ELASTICSEARCH_URL"] else None
 
     # init the extension instances with app
     db.init_app(app)

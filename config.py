@@ -35,3 +35,6 @@ ADMINS = ["test_jiangtao@163.com"]
 # sql test
 SQLALCHEMY_RECORD_QUERIES = True
 DATABASE_QUERY_TIMEOUT = 0.5
+
+# es
+ELASTICSEARCH_URL = os.environ.get('ELASTICSEARCH_URL')

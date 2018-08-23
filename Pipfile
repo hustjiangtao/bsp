@@ -19,6 +19,7 @@ gunicorn = "*"
 flask-migrate = "*"
 pyjwt = "*"
 python-dotenv = "*"
+elasticsearch = "*"
 
 [dev-packages]
 

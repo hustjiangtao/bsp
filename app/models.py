@@ -12,6 +12,12 @@ from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 import jwt
 from app import db, login
+from app.search import SearchableMixin
+
+
+# es search with sqlalchemy db event
+db.event.listen(db.session, 'before_commit', SearchableMixin.before_commit)
+db.event.listen(db.session, 'after_commit', SearchableMixin.after_commit)
 
 
 followers = db.Table("followers",
@@ -82,14 +88,13 @@ class User(UserMixin, db.Model):
         return User.query.get(id)
 
 
-class Post(db.Model):
+class Post(SearchableMixin, db.Model):
     """Post table"""
+    __searchable__ = ['body']
     id = db.Column(db.Integer, primary_key=True)
     body = db.Column(db.String(140))
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
-
-    __searchable__ = ["body"]
 
     def __repr__(self):
         return f"<Post {self.body}>"

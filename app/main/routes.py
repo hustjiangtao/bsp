@@ -35,7 +35,7 @@ def index():
     return render_template("main/index.html", title="Home", form=form, posts=posts.items, next_url=next_url, prev_url=prev_url)
 
 
-@bp.before_request
+@bp.before_app_request
 def before_request():
     if current_user.is_authenticated:
         current_user.last_seen = datetime.utcnow()
@@ -134,17 +134,13 @@ def explore():
     return render_template('main/index.html', title="Explore", posts=posts.items, next_url=next_url, prev_url=prev_url)
 
 
-@bp.route('/search', methods=['POST'])
+@bp.route('/search')
 @login_required
 def search():
-    if not g.search_form.validate_on_submit():
-        return redirect(url_for('main.index'))
-    return redirect(url_for('main.search_results', query=g.search_form.search.data))
-
-
-@bp.route('/search_results/<query>')
-@login_required
-def search_results(query):
-    # results = Post.query.whoosh_search(query, MAX_SEARCH_RESULTS).all()
-    results = []
-    return render_template('main/search_results.html', query=query, results=results)
+    if not g.search_form.validate():
+        return redirect(url_for('main.explore'))
+    page = request.args.get('page', 1, type=int)
+    posts, total = Post.search(g.search_form.q.data, page, current_app.config['POSTS_PER_PAGE'])
+    next_url = url_for('main.search', q=g.search_form.q.data, page=page + 1) if total > page * current_app.config['POSTS_PER_PAGE'] else None
+    prev_url = url_for('main.search', q=g.search_form.q.data, page=page - 1) if page > 1 else None
+    return render_template("main/search.html", title="Search", posts=posts, next_url=next_url, prev_url=prev_url)
