@@ -9,6 +9,10 @@ from app.emails import send_email
 
 
 def send_password_reset_email(user):
+    """
+    send email for password reset
+    :param user: sqlalchemy user obj
+    """
     token = user.get_reset_password_token()
     send_email('[BSP] Reset Your Password',
                sender=current_app.config["ADMINS"][0],

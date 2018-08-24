@@ -43,12 +43,15 @@ class User(UserMixin, db.Model):
                                lazy="dynamic")
 
     def set_password(self, password):
+        """set password with hash"""
         self.password_hash = generate_password_hash(password)
 
     def check_password(self, password):
+        """check if password right"""
         return check_password_hash(self.password_hash, password)
 
     def avatar(self, size):
+        """get avatar of gravatar with md5 email"""
         default_avatar = "robohash"
         md5_email = md5(self.email.lower().encode('utf-8')).hexdigest()
         return f"https://www.gravatar.com/avatar/{md5_email}?d={default_avatar}&s={size}"
@@ -57,22 +60,32 @@ class User(UserMixin, db.Model):
         return f"<User {self.username}>"
 
     def follow(self, user):
+        """to follow a user"""
         if not self.is_following(user):
             self.followed.append(user)
             return self
+        return None
 
     def unfollow(self, user):
+        """unfollow a user"""
         if self.is_following(user):
             self.followed.remove(user)
             return self
+        return None
 
     def is_following(self, user):
+        """check if following the user"""
         return self.followed.filter(followers.c.followed_id == user.id).count() > 0
 
     def followed_posts(self):
-        return Post.query.join(followers, followers.c.followed_id == Post.user_id).filter(followers.c.follower_id == self.id).order_by(Post.timestamp.desc())
+        """get all posts created by the followed users"""
+        followed = Post.query.join(followers, followers.c.followed_id == Post.user_id).filter(
+            followers.c.follower_id == self.id)
+        own = Post.query.filter_by(user_id=self.id)
+        return followed.union(own).order_by(Post.timestamp.desc())
 
     def get_reset_password_token(self, expires_in=600):
+        """get a token with jwt for resetting password"""
         data = {
             "reset_password": self.id,
             "exp": time() + expires_in,
@@ -81,11 +94,19 @@ class User(UserMixin, db.Model):
 
     @staticmethod
     def verify_reset_password_token(token):
+        """check if the token right with jwt"""
         try:
-            id = jwt.decode(token, current_app.config["SECRET_KEY"], algorithms='HS256')["reset_password"]
+            id = jwt.decode(token, current_app.config["SECRET_KEY"],
+                            algorithms='HS256')["reset_password"]
         except:
-            return
+            return None
         return User.query.get(id)
+
+
+@login.user_loader
+def load_user(id):
+    """load user obj to session by id when user login"""
+    return User.query.get(int(id))
 
 
 class Post(SearchableMixin, db.Model):
@@ -98,8 +119,3 @@ class Post(SearchableMixin, db.Model):
 
     def __repr__(self):
         return f"<Post {self.body}>"
-
-
-@login.user_loader
-def load_user(id):
-    return User.query.get(int(id))

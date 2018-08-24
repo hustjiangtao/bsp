@@ -22,6 +22,10 @@ class EditProfileForm(FlaskForm):
         self.original_username = original_username
 
     def validate_username(self, username):
+        """
+        check if username is validate
+        :param username: username form
+        """
         if username.data != self.original_username:
             user = User.query.filter_by(username=username.data).first()
             if user is not None:

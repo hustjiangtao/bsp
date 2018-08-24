@@ -11,21 +11,23 @@ from app import mail
 from config import ADMINS
 
 
-def async(f):
+def async(func):
     """Async decorator"""
     def wrapper(*args, **kwargs):
-        thr = Thread(target=f, args=args, kwargs=kwargs)
+        thr = Thread(target=func, args=args, kwargs=kwargs)
         thr.start()
     return wrapper
 
 
 @async
 def send_async_email(app, msg):
+    """send email async"""
     with app.app_context():
         mail.send(msg)
 
 
 def send_email(subject, sender, recipients, text_body, html_body):
+    """send email"""
     msg = Message(subject, sender=sender, recipients=recipients)
     msg.body = text_body
     msg.html = html_body

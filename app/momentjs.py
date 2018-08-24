@@ -11,16 +11,20 @@ class momentjs:
     """Momentjs"""
 
     def __init__(self, timestamp):
-        self.timestamp = timestamp
+        self.fmt_timestamp = timestamp.strftime('%Y-%m-%dT%H:%M:%S Z')
 
     def render(self, fmt):
-        return Markup(f"<script>document.write(moment(\"{self.timestamp.strftime('%Y-%m-%dT%H:%M:%S Z')}\").{fmt});</script>")
+        """render func"""
+        return Markup(f"<script>document.write(moment(\"{self.fmt_timestamp}\").{fmt});</script>")
 
     def format(self, fmt):
+        """format func"""
         return self.render(f"format('{fmt}')")
 
     def calendar(self):
+        """calendar func"""
         return self.render("calendar()")
 
     def fromNow(self):
+        """fromNow func"""
         return self.render("fromNow()")

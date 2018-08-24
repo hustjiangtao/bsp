@@ -16,6 +16,7 @@ from app.auth.emails import send_password_reset_email
 
 @bp.route('/login', methods=['GET', 'POST'])
 def login():
+    """login handler"""
     if current_user.is_authenticated:
         return redirect(url_for('main.index'))
     form = LoginForm()
@@ -34,6 +35,7 @@ def login():
 
 @bp.route('/register', methods=['GET', 'POST'])
 def register():
+    """register handler"""
     if current_user.is_authenticated:
         return redirect(url_for('main.index'))
     form = RegistrationForm()
@@ -50,12 +52,14 @@ def register():
 
 @bp.route('/logout')
 def logout():
+    """logout handler"""
     logout_user()
     return redirect(url_for('main.index'))
 
 
 @bp.route('/reset_password_request', methods=['GET', 'POST'])
 def reset_password_request():
+    """reset password request handler"""
     if current_user.is_authenticated:
         return redirect(url_for('main.index'))
     form = ResetPasswordRequestForm()
@@ -70,6 +74,7 @@ def reset_password_request():
 
 @bp.route('/reset_password/<token>', methods=['GET', 'POST'])
 def reset_password(token):
+    """reset password handler"""
     if current_user.is_authenticated:
         return redirect(url_for('main.index'))
     user = User.verify_reset_password_token(token)
