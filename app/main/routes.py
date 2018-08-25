@@ -31,8 +31,8 @@ def index():
     page = request.args.get('page', 1, type=int)
     # posts = Post.query.filter_by(author=current_user).order_by(Post.timestamp.desc()).all()
     posts = current_user.followed_posts().paginate(page, POSTS_PER_PAGE, False)
-    next_url = url_for('main.explore', page=posts.next_num) if posts.has_next else None
-    prev_url = url_for('main.explore', page=posts.prev_num) if posts.has_prev else None
+    next_url = url_for('main.index', page=posts.next_num) if posts.has_next else None
+    prev_url = url_for('main.index', page=posts.prev_num) if posts.has_prev else None
     return render_template("main/index.html", title="Home",
                            form=form, posts=posts.items, next_url=next_url, prev_url=prev_url)
 
