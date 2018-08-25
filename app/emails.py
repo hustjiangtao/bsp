@@ -36,7 +36,7 @@ def send_email(subject, sender, recipients, text_body, html_body):
 
 def follower_notification(followed, follower):
     """Send the user was followed a email when a follower coming."""
-    send_email("[BSP] %s is now following you!" % follower.nickname,
+    send_email("[BSP] %s is now following you!" % follower.username,
                ADMINS[0],
                [followed.email],
                render_template("main/follower_email.txt",
