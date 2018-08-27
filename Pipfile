@@ -20,6 +20,7 @@ flask-migrate = "*"
 pyjwt = "*"
 python-dotenv = "*"
 elasticsearch = "*"
+pymysql = "*"
 
 [dev-packages]
 pylint = "*"
