@@ -47,4 +47,25 @@
 {% block content %}{% endblock %}
 </body>
 <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+{% block scripts %}
+    <script>
+        // pull notification count & update
+        {% if current_user.is_authenticated %}
+            $(function() {
+                let since = 0;
+                setInterval(function() {
+                    $.ajax('{{ url_for('main.notifications') }}?since=' + since).done(
+                        function(notifications) {
+                            for (let i = 0; i < notifications.length; i++) {
+                                if (notifications[i].name == 'unread_message_count')
+                                    set_message_count(notifications[i].data);
+                                since = notifications[i].timestamp;
+                            }
+                        }
+                    );
+                }, 10000);
+            });
+        {% endif %}
+    </script>
+{% endblock %}
 </html>
