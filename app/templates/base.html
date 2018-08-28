@@ -25,6 +25,10 @@
             {{ g.search_form.q(size=20, placeholder=g.search_form.q.label.text) }}
             <input type="submit" value="Search">
         </form>
+        <a href="{{ url_for('main.messages') }}">Messages
+            {% set new_messages = current_user.new_messages() %}
+            {% if new_messages %}<span>{{ new_messages }}</span>{% endif %}
+        </a>
         <a href="{{ url_for('auth.logout') }}">Logout</a>
     {% else %}
         <a href="{{ url_for('auth.login') }}">Login</a>
