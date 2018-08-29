@@ -50,6 +50,10 @@ def create_app(cfg="config"):
     from app.main import bp as main_bp
     app.register_blueprint(main_bp)
 
+    # api blueprint
+    from app.api import bp as api_bp
+    app.register_blueprint(api_bp, url_prefix='/api')
+
     # logging handler config
     from app.logging_handler import logging_handler
     logging_handler(app)
