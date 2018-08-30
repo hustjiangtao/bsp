@@ -9,15 +9,18 @@ from app import db
 from app.models import User
 from app.api import bp
 from app.api.errors import bad_request
+from app.api.auth import token_auth
 
 
 @bp.route('/users/<int:id>', methods=['GET'])
+@token_auth.login_required
 def get_user(id):
     """get a user"""
     return jsonify(User.query.get_or_404(id).to_dict())
 
 
 @bp.route('/users', methods=['GET'])
+@token_auth.login_required
 def get_users():
     """get many users"""
     page = request.args.get('page', 1, type=int)
@@ -27,6 +30,7 @@ def get_users():
 
 
 @bp.route('/users/<int:id>/followers', methods=['GET'])
+@token_auth.login_required
 def get_followers(id):
     """get all follows of user"""
     user = User.query.get_or_404(id)
@@ -37,6 +41,7 @@ def get_followers(id):
 
 
 @bp.route('/users/<int:id>/followed', methods=['GET'])
+@token_auth.login_required
 def get_followed(id):
     """get all followed users of user"""
     user = User.query.get_or_404(id)
@@ -66,6 +71,7 @@ def create_user():
 
 
 @bp.route('/users/<int:id>', methods=['PUT'])
+@token_auth.login_required
 def update_user(id):
     """update user"""
     user = User.query.get_or_404(id)

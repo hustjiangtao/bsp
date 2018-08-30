@@ -21,6 +21,7 @@ pyjwt = "*"
 python-dotenv = "*"
 elasticsearch = "*"
 pymysql = "*"
+flask-httpauth = "*"
 
 [dev-packages]
 pylint = "*"
