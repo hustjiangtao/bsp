@@ -1,0 +1,12 @@
+.Login {
+    height: 20rem;
+    width: 25rem !important;
+    margin: 1rem auto;
+    padding: 2rem;
+    border: 2px solid silver;
+}
+
+.Login-button {
+    width: 7rem;
+    margin: 2rem !important;
+}
