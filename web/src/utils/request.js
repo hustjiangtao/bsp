@@ -1,12 +1,5 @@
 import axios from 'axios';
 
-
-// create an axios instance
-const service = axios.create({
-  baseURL: process.env.BASE_API, // api的base_url
-  timeout: 5000 // request timeout
-});
-
 function checkStatus (response) {
   // loading
   // 如果http状态码正常，则直接返回数据
@@ -24,18 +17,30 @@ function checkStatus (response) {
 function checkCode (res) {
   // 如果code异常(这里已经包括网络错误，服务器错误，后端抛出的错误)，可以弹出一个错误提示，告诉用户
   if (res.status === -404) {
-    alert(res.msg)
+    console.log(res.data);
+    // alert(res.msg)
   }
   if (res.data && (!res.data.success)) {
-    alert(res.data.error_msg)
+    console.log(res.data);
+    // alert(res.data.error_msg);
   }
   return res
 }
 
 class request {
-  static do_send (url, data, method) {
-    const base_url = 'http://localhost:5000/';
+  // Axios default headers
+  static headers () {
+    return {
+      'X-Requested-With': 'XMLHttpRequest',
+      // 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+    }
+  }
+  // Send Ajax Request
+  static do_send (url, params, method) {
+    const base_url = 'http://localhost:5000/api';
     const timeout = 10000;
+    const headers = Object.assign(this.headers(), params.headers);
+    const data = params.data || {};
     return axios({
       method: method,
       baseURL: base_url,
@@ -44,10 +49,8 @@ class request {
       // data: qs.stringify(data),
       data: data,
       timeout: timeout,
-      headers: {
-        'X-Requested-With': 'XMLHttpRequest',
-        // 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
-      }
+      headers: headers,
+      withCredentials: true,
     }).then(
       (response) => {
         return checkStatus(response)
@@ -56,10 +59,29 @@ class request {
       (res) => {
         return checkCode(res)
       }
+    ).catch(
+      (error) => {
+        const error_code = error.response.status;
+        const error_message = error.response.statusText;
+        console.log(error_message);
+      }
     )
   }
-  get (url, params) {
-    return this.do_send()
+  // Get request
+  static get (url, params) {
+    return this.do_send(url, params, 'GET')
+  }
+  // Post request
+  static post (url, params) {
+    return this.do_send(url, params, 'POST')
+  }
+  // Put request
+  static put (url, params) {
+    return this.do_send(url, params, 'PUT')
+  }
+  // Delete request
+  static delete (url, params) {
+    return this.do_send(url, params, 'DELETE')
   }
 }
 
