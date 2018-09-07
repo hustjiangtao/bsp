@@ -1,9 +1,13 @@
-.Login {
+.Login, .Register {
     height: 20rem;
     width: 25rem !important;
     margin: 1rem auto;
     padding: 2rem;
     border: 2px solid silver;
+}
+
+.Register {
+    height: 24rem;
 }
 
 .Login-button {
