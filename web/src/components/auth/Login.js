@@ -42,7 +42,12 @@ class Login extends Component {
       document.querySelector(".Register").classList.add("Login");
       document.querySelector(".Register").classList.remove("Register");
     }
-    this.setState({isLoggedIn: !this.state.isLoggedIn});
+    this.setState({
+      isLoggedIn: !this.state.isLoggedIn,
+      account: '',
+      password: '',
+      password_confirm: '',
+    });
   };
   render() {
     const isLoggedIn = this.state.isLoggedIn;
@@ -54,6 +59,7 @@ class Login extends Component {
           <Textfield
             label="Account"
             floatingLabel
+            type={"text"}
             name={"account"}
             value={this.state.account}
             onChange={this.handleAccountChange}
@@ -61,6 +67,7 @@ class Login extends Component {
           <Textfield
             label="Password"
             floatingLabel
+            type={"password"}
             name={"password"}
             value={this.state.password}
             onChange={this.handlePasswordChange}
@@ -75,6 +82,7 @@ class Login extends Component {
           <Textfield
             label="Account"
             floatingLabel
+            type={"text"}
             name={"account"}
             value={this.state.account}
             onChange={this.handleAccountChange}
@@ -82,6 +90,7 @@ class Login extends Component {
           <Textfield
             label="Password"
             floatingLabel
+            type={"password"}
             name={"password"}
             value={this.state.password}
             onChange={this.handlePasswordChange}
@@ -89,6 +98,7 @@ class Login extends Component {
           <Textfield
             label="Password Confirm"
             floatingLabel
+            type={"password"}
             name={"password_confirm"}
             value={this.state.password_confirm}
             onChange={this.handlePasswordConfirmChange}
